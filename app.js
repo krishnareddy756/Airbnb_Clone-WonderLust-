@@ -3,8 +3,13 @@ const app = express();
 const mongoose = require('mongoose');
 const Listing = require("./models/listing");
 const path = require('path');
+const { url } = require('inspector');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.urlencoded({ extended: true }));
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
 
 
 
@@ -26,7 +31,44 @@ app.get('/listings', async(req, res) => {
     const allListings=await Listing.find({})
     res.render('listings/index',{allListings});
 });
+//new route
+app.get('/listings/new', (req, res) => {
+    res.render('listings/new');
+});
+//create route
+app.post('/listings', async(req, res) => {  
+    const newListing=new Listing(req.body);
+    await newListing.save();
+    res.redirect('/listings');
+});
+//show route
+app.get('/listings/:id', async(req, res) => {
+    let {id}=req.params;
+    const listing=await Listing.findById(id);
+    res.render('listings/show',{listing});
+});
     
+//edit route
+app.get('/listings/:id/edit', async(req, res) => {
+    let {id}=req.params;
+    const listing=await Listing.findById(id);
+    res.render('listings/edit',{listing});
+});
+
+//update route
+app.put('/listings/:id', async (req, res) => {
+    let { id } = req.params;
+    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    res.redirect(`/listings/${id}`);  // ✅ Corrected redirect
+});
+
+//delete route
+app.delete('/listings/:id', async(req, res) => {
+    let {id}=req.params;
+    await Listing.findByIdAndDelete(id);
+    res.redirect('/listings');
+});
+
 // app.get('/testListings',  async (req, res) => {
 //     let sampleListing = new Listing({
 //         title: 'Test Listing',
