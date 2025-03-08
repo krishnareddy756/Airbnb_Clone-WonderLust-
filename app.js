@@ -7,9 +7,12 @@ const { url } = require('inspector');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
+
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
-
+const ejsMate = require('ejs-mate');
+app.engine('ejs', ejsMate);
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 
@@ -36,11 +39,13 @@ app.get('/listings/new', (req, res) => {
     res.render('listings/new');
 });
 //create route
-app.post('/listings', async(req, res) => {  
-    const newListing=new Listing(req.body);
+app.post('/listings', async (req, res) => {  
+    const newListing = new Listing(req.body.listing);  // ✅ Extract 'listing' from req.body
+    console.log(newListing);
     await newListing.save();
     res.redirect('/listings');
 });
+
 //show route
 app.get('/listings/:id', async(req, res) => {
     let {id}=req.params;
