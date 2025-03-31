@@ -6,17 +6,25 @@
 <body>
     <h3>Create New Listing</h3>
 
-    <form method="post" action="/listings">
+    <form method="post" action="/listings" novalidate class="needs-validation" >
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input name="listing[title]"
              type="text" placeholder="Add a cathcy title"
-              class="form-control">
-        </div>
+              class="form-control"
+              required>
+              <div class="valid-feedback">
+                Looks good!
+                </div>
+        </div>  
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <textarea name="listing[description]"  
-            class="form-control"></textarea>
+            class="form-control"
+            required></textarea>
+            <div class="invalid-feedback">
+                Please provide a valid description.
+                </div>
         </div>
         
         <br> 
@@ -26,6 +34,9 @@
             type="text" 
             placeholder="Image URL"
              class="form-control">
+                <div class="invalid-feedback">
+                Please provide a valid image URL.
+                    </div>
         </div> 
         <br>
         <div class="row">
@@ -34,7 +45,11 @@
             <input name="listing[price]" 
             type="number" 
             placeholder="1200"
-             class="form-control">
+             class="form-control"
+             required>
+                <div class="invalid-feedback">
+                    Please provide a valid price.
+                    </div>
         </div>
         <br>
         <div class="mb-3 col-md-4">
@@ -42,7 +57,11 @@
             <input name="listing[country]" 
             type="text" 
             placeholder="India"
-             class="form-control">
+             class="form-control"
+             required>
+                <div class="invalid-feedback">
+                    Please provide a valid country.
+                    </div>
         </div>
         <br>
         <br>
@@ -51,7 +70,11 @@
             <input name="listing[location]" 
             type="text" 
             placeholder="Hyderabad,Bangalore"
-             class="form-control">
+             class="form-control"
+             required>
+                <div class="invalid-feedback">
+                    Please provide a valid location.
+                    </div>
         </div>
     </div>
         
