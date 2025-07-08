@@ -20,14 +20,19 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
 const User = require('./models/user');
-// const MONGO_URL = 'mongodb://localhost:27017/wanderlust';
 const dbUrl=process.env.ATLASDB_URL;
 main()
   .then(() => console.log('Database connected'))
   .catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect(dbUrl);
+  await mongoose.connect(dbUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  ssl: true,
+  tlsAllowInvalidCertificates: true
+});
+
 }
 
 // App config
@@ -42,7 +47,7 @@ const store = MongoStore.create({
   mongoUrl: dbUrl,
   touchAfter: 24 * 3600, // time period in seconds
   crypto: {
-    secret: 'mysupersecretcode'
+    secret: process.env.SECRET ,
   },
   touchAfter:24 * 3600, // time period in seconds
 }) ;
@@ -52,7 +57,7 @@ store.on('error', function(e) {
 });
 const sessionOptions = {
   store,
-  secret: 'mysupersecretcode',
+  secret: process.env.SECRET, // Use the secret from .env file
   resave: false, 
   saveUninitialized: true, 
   cookie: {
