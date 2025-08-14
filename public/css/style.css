@@ -146,7 +146,8 @@ body {
 
 .search-field-guests {
     flex: 0 0 auto;
-    padding-right: var(--spacing-xs);
+    padding-right: var(--spacing-md);
+    min-width: 120px;
 }
 
 .search-label {
@@ -195,7 +196,8 @@ body {
     color: white;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    margin-left: var(--spacing-sm);
+    margin-left: var(--spacing-md);
+    flex-shrink: 0;
 }
 
 .search-button:hover {
