@@ -1,48 +1,131 @@
-<style>
-  .btn-search {
-    background-color: #ff5722;
-    color: white;
-    border: none;
-  }
-  .btn-search:hover {
-    background-color: #e64a19;
-  }
-  
-</style>
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-    <button class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse" 
-      data-bs-target="#navbarNavAltMarkup">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
-      </div>
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search destinations" aria-label="Search"/>
-        <button class="btn btn-search" type="submit">
-          
-          Search</button>
-      </form>
+<nav class="navbar navbar-expand-lg sticky-top" role="navigation">
+  <div class="container-fluid navbar-container">
+    
+    <!-- Logo Section -->
+    <div class="navbar-brand-section">
+      <a class="navbar-brand" href="/listings" aria-label="WanderLust Home">
+        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+        <span class="brand-text">wanderlust</span>
+      </a>
+    </div>
 
-
-        </div>
-
-      <div class="navbar-nav ms-auto">
-          <a class="nav-link" href="/listings/new">Airbnb your Home</a>
-
-        <% if (!currentUser) { %>
-          <a class="nav-link" href="/signup"><b>Sign Up</b></a>
-          <a class="nav-link" href="/login"><b>Login</b></a>
-        <% } else { %>
-          <a class="nav-link" href="/logout"><b>Log Out</b></a>
-        <% } %>
+    <!-- Search Bar Section (Desktop) -->
+    <div class="navbar-search-section d-none d-lg-block">
+      <div class="search-bar" id="searchBar">
+        <form class="search-form" role="search" action="/listings" method="GET">
+          <div class="search-inputs">
+            <div class="search-field">
+              <label for="location" class="search-label">Where</label>
+              <input 
+                type="text" 
+                id="location" 
+                name="location" 
+                class="search-input" 
+                placeholder="Search destinations"
+                aria-label="Search destinations"
+                autocomplete="off"
+              />
+            </div>
+            <div class="search-divider"></div>
+            <div class="search-field">
+              <label for="checkin" class="search-label">Check in</label>
+              <input 
+                type="text" 
+                id="checkin" 
+                name="checkin" 
+                class="search-input" 
+                placeholder="Add dates"
+                aria-label="Check-in date"
+                readonly
+              />
+            </div>
+            <div class="search-divider"></div>
+            <div class="search-field">
+              <label for="checkout" class="search-label">Check out</label>
+              <input 
+                type="text" 
+                id="checkout" 
+                name="checkout" 
+                class="search-input" 
+                placeholder="Add dates"
+                aria-label="Check-out date"
+                readonly
+              />
+            </div>
+            <div class="search-divider"></div>
+            <div class="search-field search-field-guests">
+              <label for="guests" class="search-label">Who</label>
+              <input 
+                type="text" 
+                id="guests" 
+                name="guests" 
+                class="search-input" 
+                placeholder="Add guests"
+                aria-label="Number of guests"
+                readonly
+              />
+              <button type="submit" class="search-button" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
+
+    <!-- Mobile Search Button -->
+    <div class="mobile-search d-lg-none">
+      <button class="mobile-search-btn" type="button" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <span>Where to?</span>
+      </button>
+    </div>
+
+    <!-- User Menu Section -->
+    <div class="navbar-user-section">
+      <div class="user-menu-container">
+        <% if (!currentUser) { %>
+          <a href="/listings/new" class="become-host-link">Become a Host</a>
+        <% } %>
+        
+        <div class="user-menu-dropdown">
+          <button 
+            class="user-menu-button" 
+            type="button" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false"
+            aria-label="User menu"
+          >
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            <div class="user-avatar">
+              <% if (currentUser) { %>
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
+              <% } else { %>
+                <i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+              <% } %>
+            </div>
+          </button>
+          
+          <ul class="dropdown-menu dropdown-menu-end user-dropdown">
+            <% if (!currentUser) { %>
+              <li><a class="dropdown-item" href="/signup">Sign up</a></li>
+              <li><a class="dropdown-item" href="/login">Log in</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/listings/new">Airbnb your home</a></li>
+            <% } else { %>
+              <li><a class="dropdown-item" href="/listings">My trips</a></li>
+              <li><a class="dropdown-item" href="/listings">Wishlists</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/listings/new">Airbnb your home</a></li>
+              <li><a class="dropdown-item" href="/listings">Host an experience</a></li>
+              <li><a class="dropdown-item" href="/listings">Account</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/logout">Log out</a></li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
   </div>
 </nav>

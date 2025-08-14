@@ -1,91 +1,132 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row mt-3">
-    <div class="col-8 offset-2" >
-        <br>
-        
-<body>
-    <h3>Create New Listing</h3>
 
-    <form method="post" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input name="listing[title]"
-             type="text" placeholder="Add a cathcy title"
-              class="form-control"
-              required>
-              <div class="valid-feedback">
-                Looks good!
-                </div>
-        </div>  
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="listing[description]"  
-            class="form-control"
-            required></textarea>
-            <div class="invalid-feedback">
-                Please provide a valid description.
-                </div>
-        </div>
+<!-- Create New Listing Page -->
+<div class="form-container">
+  <div class="form-header">
+    <h1 class="form-title">Create your listing</h1>
+    <p class="form-subtitle">Share your space with travelers from around the world</p>
+  </div>
+
+  <div class="form-content">
+    <form method="post" action="/listings" novalidate class="needs-validation listing-form" enctype="multipart/form-data">
+      
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h2 class="section-title">Basic Information</h2>
         
-        <br> 
+        <div class="form-group">
+          <label for="title" class="form-label">Property Title</label>
+          <input 
+            name="listing[title]"
+            type="text" 
+            placeholder="Give your listing a catchy title"
+            class="form-input"
+            required
+          >
+          <div class="form-help">Choose a title that highlights what makes your place special</div>
+          <div class="invalid-feedback">Please provide a valid title.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <textarea 
+            name="listing[description]"
+            class="form-textarea"
+            placeholder="Describe your space, what makes it unique, and what guests can expect..."
+            rows="5"
+            required
+          ></textarea>
+          <div class="form-help">Help guests understand what makes your place special</div>
+          <div class="invalid-feedback">Please provide a valid description.</div>
+        </div>
+      </div>
+
+      <!-- Photos Section -->
+      <div class="form-section">
+        <h2 class="section-title">Photos</h2>
         
-        <div class="mb-3">
-            <label for="image" class="form-label">Upload Image </label>
-            <input name="listing[image]" 
-            type="file" 
-           
-             class="form-control">
-             required>
-            <div class="invalid-feedback">
-                Please provide a valid image URL.
-                </div>
+        <div class="form-group">
+          <label for="image" class="form-label">Upload Photos</label>
+          <div class="file-upload-area">
+            <input 
+              name="listing[image]" 
+              type="file" 
+              class="file-input"
+              accept="image/*"
+              required
+            >
+            <div class="file-upload-content">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Drag and drop photos here, or click to browse</p>
+              <span class="file-help">JPG, PNG, or GIF (max 10MB)</span>
+            </div>
+          </div>
+          <div class="invalid-feedback">Please upload at least one photo.</div>
         </div>
-        <br>
-        <div class="row">
-        <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input name="listing[price]" 
-            type="number" 
-            placeholder="1200"
-             class="form-control"
-             required>
-                <div class="invalid-feedback">
-                    Please provide a valid price.
-                    </div>
-        </div>
-        <br>
-        <div class="mb-3 col-md-4">
+      </div>
+
+      <!-- Location Section -->
+      <div class="form-section">
+        <h2 class="section-title">Location</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
             <label for="country" class="form-label">Country</label>
-            <input name="listing[country]" 
-            type="text" 
-            placeholder="India"
-             class="form-control"
-             required>
-                <div class="invalid-feedback">
-                    Please provide a valid country.
-                    </div>
+            <input 
+              name="listing[country]" 
+              type="text" 
+              placeholder="India"
+              class="form-input"
+              required
+            >
+            <div class="invalid-feedback">Please provide a valid country.</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="location" class="form-label">City/Location</label>
+            <input 
+              name="listing[location]" 
+              type="text" 
+              placeholder="Mumbai, Maharashtra"
+              class="form-input"
+              required
+            >
+            <div class="invalid-feedback">Please provide a valid location.</div>
+          </div>
         </div>
-        <br>
-        <br>
-        <div class="mb-3 col-md-8">
-            <label for="location" class="form-label">Location</label>
-            <input name="listing[location]" 
-            type="text" 
-            placeholder="Hyderabad,Bangalore"
-             class="form-control"
-             required>
-                <div class="invalid-feedback">
-                    Please provide a valid location.
-                    </div>
+      </div>
+
+      <!-- Pricing Section -->
+      <div class="form-section">
+        <h2 class="section-title">Pricing</h2>
+        
+        <div class="form-group">
+          <label for="price" class="form-label">Price per night</label>
+          <div class="price-input-container">
+            <span class="currency-symbol">₹</span>
+            <input 
+              name="listing[price]" 
+              type="number" 
+              placeholder="2500"
+              class="form-input price-input"
+              min="1"
+              required
+            >
+          </div>
+          <div class="form-help">Set a competitive price for your area</div>
+          <div class="invalid-feedback">Please provide a valid price.</div>
         </div>
-    </div>
-        
-        
-        <button class="btn btn-dark add-btn">Create Listing</button>
-        <br>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button type="submit" class="submit-btn">
+          <i class="fa-solid fa-plus"></i>
+          Create Listing
+        </button>
+        <a href="/listings" class="cancel-btn">Cancel</a>
+      </div>
 
     </form>
-    
-</body>
-</div>
+  </div>
 </div>

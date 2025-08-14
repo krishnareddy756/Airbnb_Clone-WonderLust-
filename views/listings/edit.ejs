@@ -1,65 +1,145 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row mt-3">
-    <div class="col-8 offset-2">
 
-   
-<body>
-    <h3>Edit Listing</h3>
+<!-- Edit Listing Page -->
+<div class="form-container">
+  <div class="form-header">
+    <h1 class="form-title">Edit your listing</h1>
+    <p class="form-subtitle">Update your space details to attract more guests</p>
+  </div>
 
-    <form method="post" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input name="listing[title]" type="text" value="<%= listing.title %>" placeholder="Title" class="form-control" required>
-        <div class="valid-feedback">
-                Looks good!
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>    
-        <div class="invalid-feedback">
-                Please provide a valid description.
-            </div>
-        </div>
-        <div class="mb-3">
-            Original Image
-            <br>
-            <img src="<%= originalImageUrl %>" >
-            </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Upload New Image </label>
-            <input name="listing[image]" type="file" class="form-control" >
+  <div class="form-content">
+    <form method="post" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation listing-form" enctype="multipart/form-data">
+      
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h2 class="section-title">Basic Information</h2>
         
+        <div class="form-group">
+          <label for="title" class="form-label">Property Title</label>
+          <input 
+            name="listing[title]"
+            type="text" 
+            value="<%= listing.title %>"
+            placeholder="Give your listing a catchy title"
+            class="form-input"
+            required
+          >
+          <div class="form-help">Choose a title that highlights what makes your place special</div>
+          <div class="invalid-feedback">Please provide a valid title.</div>
         </div>
-        <div class="row ">
 
-        
-        <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price</label>
-            <input name="listing[price]" type="number" value="<%= listing.price %>" placeholder="1200" class="form-control" required>
-        <div class="invalid-feedback">
-                Please provide a valid price.
-            </div>
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <textarea 
+            name="listing[description]"
+            class="form-textarea"
+            placeholder="Describe your space, what makes it unique, and what guests can expect..."
+            rows="5"
+            required
+          ><%= listing.description %></textarea>
+          <div class="form-help">Help guests understand what makes your place special</div>
+          <div class="invalid-feedback">Please provide a valid description.</div>
         </div>
-        <div class="mb-3 col-md-8">
+      </div>
+
+      <!-- Photos Section -->
+      <div class="form-section">
+        <h2 class="section-title">Photos</h2>
+        
+        <!-- Current Image Preview -->
+        <div class="current-image-preview">
+          <label class="form-label">Current Photo</label>
+          <div class="image-preview-container">
+            <img src="<%= originalImageUrl %>" alt="Current listing photo" class="current-image">
+            <div class="image-overlay">
+              <span>Current Photo</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="image" class="form-label">Upload New Photo (Optional)</label>
+          <div class="file-upload-area">
+            <input 
+              name="listing[image]" 
+              type="file" 
+              class="file-input"
+              accept="image/*"
+            >
+            <div class="file-upload-content">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Drag and drop a new photo here, or click to browse</p>
+              <span class="file-help">JPG, PNG, or GIF (max 10MB) - Leave empty to keep current photo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location Section -->
+      <div class="form-section">
+        <h2 class="section-title">Location</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
             <label for="country" class="form-label">Country</label>
-            <input name="listing[country]" type="text" value="<%= listing.country %>" placeholder="India" class="form-control" required>
-        <div class="invalid-feedback">
-                Please provide a valid country.
-            </div>
+            <input 
+              name="listing[country]" 
+              type="text" 
+              value="<%= listing.country %>"
+              placeholder="India"
+              class="form-input"
+              required
+            >
+            <div class="invalid-feedback">Please provide a valid country.</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="location" class="form-label">City/Location</label>
+            <input 
+              name="listing[location]" 
+              type="text" 
+              value="<%= listing.location %>"
+              placeholder="Mumbai, Maharashtra"
+              class="form-input"
+              required
+            >
+            <div class="invalid-feedback">Please provide a valid location.</div>
+          </div>
         </div>
-    </div>
-        <div class="mb-3 ">
-            <label for="location" class="form-label">Location</label>
-            <input name="listing[location]" value="<%= listing.location %>" placeholder="Hyderabad,Bangalore" class="form-control" required>
-       <div class="invalid-feedback">
-                Please provide a valid location.
-            </div>
+      </div>
+
+      <!-- Pricing Section -->
+      <div class="form-section">
+        <h2 class="section-title">Pricing</h2>
+        
+        <div class="form-group">
+          <label for="price" class="form-label">Price per night</label>
+          <div class="price-input-container">
+            <span class="currency-symbol">₹</span>
+            <input 
+              name="listing[price]" 
+              type="number" 
+              value="<%= listing.price %>"
+              placeholder="2500"
+              class="form-input price-input"
+              min="1"
+              required
+            >
+          </div>
+          <div class="form-help">Set a competitive price for your area</div>
+          <div class="invalid-feedback">Please provide a valid price.</div>
         </div>
-        <button class="btn btn-dark edit-btn">Edit Listing</button>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button type="submit" class="submit-btn">
+          <i class="fa-solid fa-save"></i>
+          Update Listing
+        </button>
+        <a href="/listings/<%= listing._id %>" class="cancel-btn">Cancel</a>
+      </div>
 
     </form>
-    
-</body>
-</div>
+  </div>
 </div>
