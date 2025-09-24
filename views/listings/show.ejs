@@ -30,7 +30,7 @@
         <i class="fa-solid fa-share"></i>
         <span>Share</span>
       </button>
-      <button class="action-btn save-btn">
+      <button class="action-btn save-btn" data-listing-id="<%= listing._id %>">
         <i class="fa-regular fa-heart"></i>
         <span>Save</span>
       </button>
@@ -133,7 +133,7 @@
             <label>GUESTS</label>
             <input type="text" placeholder="1 guest" readonly>
           </div>
-          <button class="reserve-btn">Reserve</button>
+          <button class="reserve-btn" data-listing-id="<%= listing._id %>">Reserve</button>
           <p class="booking-note">You won't be charged yet</p>
         </div>
 

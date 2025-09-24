@@ -42,3 +42,68 @@ module.exports.logout= (req, res) => {
         res.redirect('/listings'); // Redirect to listings or home page
     });
 };
+
+module.exports.renderWishlists = async (req, res) => {
+    if (!req.user) {
+        req.flash('error', 'Please login to view wishlists');
+        return res.redirect('/login');
+    }
+    
+    try {
+        const user = await User.findById(req.user._id).populate('wishlists');
+        console.log('Rendering wishlists page with', user.wishlists.length, 'items');
+        res.render('users/wishlists.ejs', { wishlists: user.wishlists || [] });
+    } catch (error) {
+        console.error('Error loading wishlists:', error);
+        req.flash('error', 'Error loading wishlists');
+        res.redirect('/listings');
+    }
+};
+
+module.exports.addToWishlist = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, message: 'Please login first' });
+    }
+    
+    try {
+        const listingId = req.params.id;
+        console.log('Adding to wishlist - User ID:', req.user._id, 'Listing ID:', listingId);
+        
+        const user = await User.findById(req.user._id);
+        console.log('User before adding:', user);
+        
+        // Initialize wishlists array if it doesn't exist
+        if (!user.wishlists) {
+            user.wishlists = [];
+        }
+        
+        if (!user.wishlists.includes(listingId)) {
+            user.wishlists.push(listingId);
+            await user.save();
+            console.log('User after adding:', user);
+            res.json({ success: true, message: 'Added to wishlist' });
+        } else {
+            res.json({ success: false, message: 'Already in wishlist' });
+        }
+    } catch (error) {
+        console.error('Error adding to wishlist:', error);
+        res.status(500).json({ success: false, message: 'Error adding to wishlist' });
+    }
+};
+
+module.exports.removeFromWishlist = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, message: 'Please login first' });
+    }
+    
+    try {
+        const listingId = req.params.id;
+        const user = await User.findById(req.user._id);
+        
+        user.wishlists = user.wishlists.filter(id => !id.equals(listingId));
+        await user.save();
+        res.json({ success: true, message: 'Removed from wishlist' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error removing from wishlist' });
+    }
+};

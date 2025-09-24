@@ -347,6 +347,78 @@ const sampleListings = [
     location: "Costa Rica",
     country: "Costa Rica",
   },
+  {
+    title: "Royal Heritage Houseboat in Kerala",
+    description:
+      "Experience the serene backwaters of Kerala in this traditional houseboat with modern amenities. Wake up to stunning sunrise views over the water.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2VyYWxhJTIwaG91c2Vib2F0fGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    },
+    price: 3500,
+    location: "Alleppey",
+    country: "India",
+  },
+  {
+    title: "Luxury Desert Camp in Rajasthan",
+    description:
+      "Sleep under the stars in this luxury desert camp in the Thar Desert. Enjoy camel rides, folk music, and authentic Rajasthani cuisine.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cmFqYXN0aGFuJTIwZGVzZXJ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    },
+    price: 4200,
+    location: "Jaisalmer",
+    country: "India",
+  },
+  {
+    title: "Himalayan Mountain Lodge in Manali",
+    description:
+      "Escape to the majestic Himalayas in this cozy mountain lodge. Perfect for trekking enthusiasts and nature lovers seeking adventure.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGltYWxheWFzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    },
+    price: 2800,
+    location: "Manali",
+    country: "India",
+  },
+  {
+    title: "Beachfront Villa in Goa",
+    description:
+      "Relax in this stunning beachfront villa in North Goa. Enjoy private beach access, infinity pool, and spectacular sunset views.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z29hJTIwYmVhY2h8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+    },
+    price: 5500,
+    location: "Goa",
+    country: "India",
+  },
+  {
+    title: "Heritage Haveli in Udaipur",
+    description:
+      "Stay in a restored 18th-century haveli overlooking Lake Pichola. Experience royal Rajasthani hospitality with modern luxury amenities.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dWRhaXB1cnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    },
+    price: 6200,
+    location: "Udaipur",
+    country: "India",
+  },
+  {
+    title: "Tea Estate Bungalow in Darjeeling",
+    description:
+      "Wake up to misty mountain views and fresh tea gardens in this colonial-era bungalow. Experience the charm of the Queen of Hills.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZGFyamVlbGluZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    },
+    price: 3200,
+    location: "Darjeeling",
+    country: "India",
+  },
 ];
 
 module.exports = { data: sampleListings };

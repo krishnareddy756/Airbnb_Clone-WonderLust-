@@ -1,0 +1,214 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">
+        <i class="fa-regular fa-heart"></i>
+        Wishlists
+      </h1>
+
+      <div class="wishlist-content">
+        <% if (wishlists && wishlists.length > 0) { %>
+        <div class="row">
+          <% for (let listing of wishlists) { %>
+          <div class="col-md-4 mb-4">
+            <div class="card listing-card">
+              <img
+                src="<%= listing.image.url %>"
+                class="card-img-top"
+                alt="<%= listing.title %>"
+                style="height: 200px; object-fit: cover"
+              />
+              <div class="card-body">
+                <h5 class="card-title"><%= listing.title %></h5>
+                <p class="card-text text-muted">
+                  <i class="fa-solid fa-location-dot"></i>
+                  <%= listing.location %>, <%= listing.country %>
+                </p>
+                <p class="card-text">
+                  <strong>₹<%= listing.price.toLocaleString("en-IN") %></strong>
+                  night
+                </p>
+                <div class="card-actions">
+                  <a
+                    href="/listings/<%= listing._id %>"
+                    class="btn btn-outline-primary"
+                    >View Details</a
+                  >
+                  <button
+                    class="btn btn-outline-danger remove-wishlist"
+                    data-listing-id="<%= listing._id %>"
+                  >
+                    <i class="fa-solid fa-heart"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <% } else { %>
+        <div class="text-center py-5">
+          <div class="mb-4">
+            <i
+              class="fa-regular fa-heart"
+              style="font-size: 4rem; color: #ccc"
+            ></i>
+          </div>
+          <h3 class="mb-3">Create your first wishlist</h3>
+          <p class="text-muted mb-4">
+            As you search, tap the heart icon to save your favorite places to
+            stay or things to do to a wishlist.
+          </p>
+          <a href="/listings" class="btn btn-primary"> Start exploring </a>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .wishlist-content {
+    min-height: 400px;
+  }
+
+  .wishlist-content .text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+
+  .listing-card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+
+  .listing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .listing-card img {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .remove-wishlist {
+    border: none;
+    background: none;
+    color: #ff385c;
+    font-size: 1.2rem;
+    padding: 8px;
+  }
+
+  .remove-wishlist:hover {
+    color: #e31c5f;
+    background: rgba(255, 56, 92, 0.1);
+  }
+
+  .btn-primary {
+    background-color: #ff385c;
+    border-color: #ff385c;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    background-color: #e31c5f;
+    border-color: #e31c5f;
+  }
+
+  .btn-outline-primary {
+    color: #ff385c;
+    border-color: #ff385c;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #ff385c;
+    border-color: #ff385c;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Handle remove from wishlist buttons
+    const removeButtons = document.querySelectorAll(".remove-wishlist");
+    removeButtons.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const listingId = this.getAttribute("data-listing-id");
+        const card = this.closest(".col-md-4");
+
+        fetch(`/wishlists/${listingId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Animate card removal
+              card.style.transition = "all 0.3s ease";
+              card.style.opacity = "0";
+              card.style.transform = "scale(0.8)";
+
+              setTimeout(() => {
+                card.remove();
+
+                // Check if no more items
+                const remainingCards =
+                  document.querySelectorAll(".listing-card").length;
+                if (remainingCards === 0) {
+                  location.reload(); // Reload to show empty state
+                }
+              }, 300);
+
+              showNotification("Removed from wishlist", "success");
+            } else {
+              showNotification("Error removing from wishlist", "error");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            showNotification("Error removing from wishlist", "error");
+          });
+      });
+    });
+
+    function showNotification(message, type) {
+      const notification = document.createElement("div");
+      notification.className = `notification notification-${type}`;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.transform = "translateX(0)";
+      }, 100);
+
+      setTimeout(() => {
+        notification.style.transform = "translateX(100%)";
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+  });
+</script>

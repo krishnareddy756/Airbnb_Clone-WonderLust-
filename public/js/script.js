@@ -472,3 +472,193 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Wishlist functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle Save button clicks (heart icon in listing details)
+    const saveButtons = document.querySelectorAll('.save-btn');
+    saveButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const listingId = this.getAttribute('data-listing-id');
+            toggleWishlist(listingId, this);
+        });
+    });
+
+    // Handle Reserve button clicks
+    const reserveButtons = document.querySelectorAll('.reserve-btn');
+    reserveButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const listingId = this.getAttribute('data-listing-id');
+            addToWishlist(listingId, this);
+        });
+    });
+
+    // Handle remove from wishlist buttons on wishlist page
+    const removeWishlistButtons = document.querySelectorAll('.remove-wishlist');
+    removeWishlistButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const listingId = this.getAttribute('data-listing-id');
+            removeFromWishlist(listingId, this);
+        });
+    });
+
+    function addToWishlist(listingId, button) {
+        fetch(`/wishlists/${listingId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update button appearance
+                button.innerHTML = 'Added to Wishlist!';
+                button.style.backgroundColor = '#28a745';
+                button.style.borderColor = '#28a745';
+                
+                // Show success message
+                showNotification('Added to wishlist!', 'success');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = 'Reserve';
+                    button.style.backgroundColor = '#ff385c';
+                    button.style.borderColor = '#ff385c';
+                }, 2000);
+            } else {
+                showNotification(data.message || 'Already in wishlist', 'info');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Please login to add to wishlist', 'error');
+        });
+    }
+
+    function toggleWishlist(listingId, button) {
+        const icon = button.querySelector('i');
+        const isActive = icon.classList.contains('fa-solid');
+        
+        if (isActive) {
+            // Remove from wishlist
+            removeFromWishlist(listingId, button);
+        } else {
+            // Add to wishlist
+            fetch(`/wishlists/${listingId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    icon.className = 'fa-solid fa-heart';
+                    button.style.color = '#ff385c';
+                    showNotification('Added to wishlist!', 'success');
+                } else {
+                    showNotification(data.message || 'Already in wishlist', 'info');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Please login to add to wishlist', 'error');
+            });
+        }
+    }
+
+    function removeFromWishlist(listingId, button) {
+        fetch(`/wishlists/${listingId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // If on wishlist page, remove the card
+                if (button.classList.contains('remove-wishlist')) {
+                    const card = button.closest('.col-md-4');
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        card.remove();
+                        // Check if no more items
+                        const remainingCards = document.querySelectorAll('.listing-card').length;
+                        if (remainingCards === 0) {
+                            location.reload(); // Reload to show empty state
+                        }
+                    }, 300);
+                } else {
+                    // If on listing details page, update heart icon
+                    const icon = button.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fa-regular fa-heart';
+                        button.style.color = '';
+                    }
+                }
+                showNotification('Removed from wishlist', 'success');
+            } else {
+                showNotification('Error removing from wishlist', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error removing from wishlist', 'error');
+        });
+    }
+
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+
+        // Set background color based on type
+        switch(type) {
+            case 'success':
+                notification.style.backgroundColor = '#28a745';
+                break;
+            case 'error':
+                notification.style.backgroundColor = '#dc3545';
+                break;
+            case 'info':
+                notification.style.backgroundColor = '#17a2b8';
+                break;
+            default:
+                notification.style.backgroundColor = '#6c757d';
+        }
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+});

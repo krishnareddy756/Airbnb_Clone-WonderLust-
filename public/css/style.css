@@ -1805,4 +1805,192 @@ lter Bar Styles */
     .form-section .section-title {
         font-size: 20px;
     }
+}/* Reser
+ve Button Styling */
+.reserve-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background-color: #ff385c;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 16px;
+}
+
+.reserve-btn:hover {
+    background-color: #e31c5f;
+    color: white;
+    text-decoration: none;
+}
+
+.reserve-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 56, 92, 0.3);
+}/
+* Wishlist and Reserve Button Styles */
+.reserve-btn {
+    background: var(--airbnb-red);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.reserve-btn:hover {
+    background: var(--airbnb-red-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+    color: white;
+    text-decoration: none;
+}
+
+.save-btn {
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--border-radius-md);
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.save-btn:hover {
+    border-color: var(--text-primary);
+    background: rgba(0,0,0,0.05);
+}
+
+.save-btn i {
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.save-btn.active i {
+    color: var(--airbnb-red);
+}
+
+/* Wishlist page styles */
+.listing-card {
+    transition: all 0.3s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.remove-wishlist {
+    background: none;
+    border: none;
+    color: var(--airbnb-red);
+    font-size: 1.2rem;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-wishlist:hover {
+    background: rgba(255, 56, 92, 0.1);
+    transform: scale(1.1);
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: var(--border-radius-md);
+    color: white;
+    font-weight: var(--font-weight-medium);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-medium);
+}
+
+.notification-success {
+    background-color: #28a745;
+}
+
+.notification-error {
+    background-color: #dc3545;
+}
+
+.notification-info {
+    background-color: #17a2b8;
+}
+
+/* Action buttons in listing header */
+.action-btn {
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--border-radius-md);
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+}
+
+.action-btn:hover {
+    border-color: var(--text-primary);
+    background: rgba(0,0,0,0.05);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.action-btn i {
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .card-actions .btn {
+        width: 100%;
+    }
+    
+    .remove-wishlist {
+        align-self: flex-end;
+    }
 }
