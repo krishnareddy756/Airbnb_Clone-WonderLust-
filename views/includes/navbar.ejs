@@ -10,67 +10,34 @@
     </div>
 
     <!-- Search Bar Section (Desktop) -->
-    <div class="navbar-search-section d-none d-lg-block">
-      <div class="search-bar" id="searchBar">
-        <form class="search-form" role="search" action="/listings" method="GET">
-          <div class="search-inputs">
-            <div class="search-field">
-              <label for="location" class="search-label">Where</label>
-              <input 
-                type="text" 
-                id="location" 
-                name="location" 
-                class="search-input" 
-                placeholder="Search destinations"
-                aria-label="Search destinations"
-                autocomplete="off"
-              />
+    <div class="navbar-search-section d-none d-lg-flex justify-content-center">
+      <form action="/listings" method="GET" class="w-100" style="max-width:980px;">
+        <div class="search-pill d-flex align-items-center p-2 shadow-sm rounded-pill bg-white">
+          <div class="px-3 flex-fill">
+            <label class="form-label small text-muted mb-1 d-none">Where</label>
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-location-dot"></i></span>
+              <input type="text" name="location" class="form-control border-0" placeholder="Anywhere" aria-label="Search destinations" autocomplete="off">
             </div>
-            <div class="search-divider"></div>
-            <div class="search-field">
-              <label for="checkin" class="search-label">Check in</label>
-              <input 
-                type="text" 
-                id="checkin" 
-                name="checkin" 
-                class="search-input" 
-                placeholder="Add dates"
-                aria-label="Check-in date"
-                readonly
-              />
-            </div>
-            <div class="search-divider"></div>
-            <div class="search-field">
-              <label for="checkout" class="search-label">Check out</label>
-              <input 
-                type="text" 
-                id="checkout" 
-                name="checkout" 
-                class="search-input" 
-                placeholder="Add dates"
-                aria-label="Check-out date"
-                readonly
-              />
-            </div>
-            <div class="search-divider"></div>
-            <div class="search-field search-field-guests">
-              <label for="guests" class="search-label">Who</label>
-              <input 
-                type="text" 
-                id="guests" 
-                name="guests" 
-                class="search-input" 
-                placeholder="Add guests"
-                aria-label="Number of guests"
-                readonly
-              />
-            </div>
-            <button type="submit" class="search-button" aria-label="Search">
-              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </div>
+
+          <div class="px-3 d-none d-xl-block">
+            <label class="form-label small text-muted mb-1 d-none">Dates</label>
+            <input type="text" name="dates" class="form-control border-0" placeholder="Add dates" readonly>
+          </div>
+
+          <div class="px-3 d-none d-xl-block">
+            <label class="form-label small text-muted mb-1 d-none">Guests</label>
+            <input type="number" name="guests" class="form-control border-0" placeholder="Add guests" min="1">
+          </div>
+
+          <div class="px-3">
+            <button class="btn btn-danger rounded-pill px-4" type="submit" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
 
     <!-- Mobile Search Button -->

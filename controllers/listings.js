@@ -3,9 +3,54 @@ const Listing = require('../models/listing');
 const mbxGeocoding= require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
-module.exports.index=async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render('listings/index', { allListings });
+/**
+ * GET /listings
+ * Supports optional query params for searching and pagination:
+ *  - location: text search against `location` and `title` (case-insensitive)
+ *  - minPrice: minimum price (number)
+ *  - maxPrice: maximum price (number)
+ *  - page: pagination page (1-based)
+ * Example: /listings?location=goa&minPrice=500&maxPrice=2000&page=2
+ */
+module.exports.index = async (req, res) => {
+  const { location, minPrice, maxPrice } = req.query;
+  const page = Math.max(parseInt(req.query.page) || 1, 1);
+  const limit = 12; // listings per page
+
+  // Build query object
+  const query = {};
+
+  if (location && location.trim() !== '') {
+    const safe = location.trim();
+    // Case-insensitive partial match on location or title
+    query.$or = [
+      { location: { $regex: safe, $options: 'i' } },
+      { title: { $regex: safe, $options: 'i' } }
+    ];
+  }
+
+  if (minPrice || maxPrice) {
+    query.price = {};
+    if (minPrice && !isNaN(minPrice)) query.price.$gte = Number(minPrice);
+    if (maxPrice && !isNaN(maxPrice)) query.price.$lte = Number(maxPrice);
+    // If price object is empty, remove it
+    if (Object.keys(query.price).length === 0) delete query.price;
+  }
+
+  // Count matching documents for pagination
+  const total = await Listing.countDocuments(query);
+  const allListings = await Listing.find(query)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .exec();
+
+  res.render('listings/index', {
+    allListings,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+    totalResults: total,
+    query: { location, minPrice, maxPrice }
+  });
 };
 module.exports.renderNewForm = (req, res) => {
   res.render('listings/new');
