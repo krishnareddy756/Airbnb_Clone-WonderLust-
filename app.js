@@ -16,8 +16,10 @@ const flash = require("connect-flash");
 const listingRouter = require("./routes/listing");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
+const apiRouter = require('./routes/api');
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const User = require("./models/user");
 const dbUrl = process.env.ATLASDB_URL;
@@ -78,6 +80,37 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
+// Configure Google OAuth strategy if credentials provided
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+    passReqToCallback: true
+  }, async function(accessToken, refreshToken, profile, cb) {
+    // Find or create user based on profile emails
+    try {
+      // first argument will be req because passReqToCallback is true
+      const req = arguments[0];
+      const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+      if (!email) return cb(null, false, { message: 'No email found in Google profile' });
+      let user = await User.findOne({ email });
+      if (!user) {
+        user = new User({ username: profile.displayName || email, email });
+        await user.save();
+        // mark in session that a new user was created via Google and store profile for prefilling
+        if (req && req.session) {
+          req.session.wasNewGoogleUser = true;
+          req.session.googleProfile = { email, displayName: profile.displayName };
+        }
+      }
+      return cb(null, user);
+    } catch (e) {
+      return cb(e);
+    }
+  }));
+}
+
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -102,6 +135,7 @@ app.use((req, res, next) => {
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
+app.use('/api', apiRouter);
 // --- Review Routes directly in app.js --- //
 
 const validateReview = (req, res, next) => {
@@ -125,7 +159,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 8082;
+const PORT = process.env.PORT || 8002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

@@ -1,7 +1,14 @@
 const User = require('../models/user');
+const { signToken } = require('../utils/jwt');
 
 module.exports.renderSignupForm= (req, res) => {
-    res.render('users/signup.ejs');
+    // If Google provided profile data during OAuth signup, prefill the signup form
+    const googleProfile = req.session && req.session.googleProfile ? req.session.googleProfile : null;
+    // clear the session-stored profile after reading
+    if (req.session && req.session.googleProfile) {
+        delete req.session.googleProfile;
+    }
+    res.render('users/signup.ejs', { googleProfile });
 };
 module.exports.renderLoginForm = (req, res) => {
     res.render('users/login.ejs');
@@ -18,6 +25,8 @@ module.exports.signup = async (req, res) => {
                     return res.redirect('/signup');
                 }
                 req.flash('success', 'Registered and logged in successfully');
+                // clear any leftover google profile session data
+                if (req.session && req.session.googleProfile) delete req.session.googleProfile;
                 res.redirect('/listings'); // Redirect to listings or home page
             });
             
@@ -33,6 +42,26 @@ module.exports.login =     async (req, res) => {
         let redirectUrl = res.locals.redirectUrl || '/listings'; // Default to listings if no redirectUrl
         res.redirect(redirectUrl); // Or wherever you want
     };
+
+// API login - returns JWT. Accepts JSON body: { username, password }
+module.exports.apiLogin = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+        // Use passport-local-mongoose's authenticate function
+        const auth = User.authenticate();
+        auth(username, password, (err, user, options) => {
+            if (err || !user) {
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
+            // sign minimal payload
+            const token = signToken({ user: { _id: user._id, username: user.username } });
+            return res.json({ token });
+        });
+    } catch (e) {
+        return res.status(500).json({ error: 'Server error' });
+    }
+};
 module.exports.logout= (req, res) => {
     req.logout((err) => {
         if (err) {
