@@ -1,0 +1,150 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="payment-cancel-container">
+  <div class="cancel-card">
+    <div class="cancel-icon">
+      <i class="fa-solid fa-circle-xmark"></i>
+    </div>
+    
+    <h1 class="cancel-title">Payment Cancelled</h1>
+    
+    <p class="cancel-message">
+      Your payment was cancelled. Your booking has not been confirmed.
+    </p>
+    
+    <div class="cancel-info">
+      <p>Don't worry! Your booking details were saved. You can try again whenever you're ready.</p>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="goBack()">Try Again</button>
+      <a href="/listings" class="btn btn-secondary">Back to Listings</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.payment-cancel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.cancel-card {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.cancel-icon {
+  font-size: 80px;
+  color: #dc3545;
+  margin-bottom: 20px;
+  animation: shakeAnimation 0.5s ease-out;
+}
+
+@keyframes shakeAnimation {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+.cancel-title {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.cancel-message {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.cancel-info {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 15px 20px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.cancel-info p {
+  color: #856404;
+  font-size: 14px;
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 12px 30px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .cancel-card {
+    padding: 40px 20px;
+  }
+  
+  .cancel-title {
+    font-size: 24px;
+  }
+  
+  .cancel-icon {
+    font-size: 60px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+</style>
+
+<script>
+function goBack() {
+  history.back();
+}
+</script>

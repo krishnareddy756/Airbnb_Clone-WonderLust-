@@ -14,7 +14,7 @@ const listingSchema = new Schema({
   },
   price: {
     type: Number,
-    default: 1000,
+    default: 50, // Price in USD
   },
   location: String,
   country: String,

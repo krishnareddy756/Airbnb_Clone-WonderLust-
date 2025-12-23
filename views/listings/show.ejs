@@ -1,7 +1,7 @@
 <% layout("/layouts/boilerplate") %>
 <script>
   const mapToken = "<%= process.env.MAP_TOKEN %>";
-  const listing = <%- JSON.stringify(listing) %>;
+  window.listing = <%- JSON.stringify(listing) %>;
 </script>
 
 <!-- Listing Details Page -->
@@ -108,7 +108,7 @@
       <div class="booking-card">
         <div class="booking-header">
           <div class="price-info">
-            <span class="price">₹<%= listing.price.toLocaleString("en-IN") %></span>
+            <span class="price">$<%= listing.price.toFixed(2) %></span>
             <span class="price-period">night</span>
           </div>
           <div class="booking-rating">
@@ -119,37 +119,48 @@
         </div>
 
         <div class="booking-form">
-          <div class="date-inputs">
-            <div class="date-input">
-              <label>CHECK-IN</label>
-              <input type="text" placeholder="Add date" readonly>
-            </div>
-            <div class="date-input">
-              <label>CHECKOUT</label>
-              <input type="text" placeholder="Add date" readonly>
-            </div>
-          </div>
-          <div class="guests-input">
-            <label>GUESTS</label>
-            <input type="text" placeholder="1 guest" readonly>
-          </div>
-          <button class="reserve-btn" data-listing-id="<%= listing._id %>">Reserve</button>
-          <p class="booking-note">You won't be charged yet</p>
+          <% if(currentUser) { %>
+            <form id="bookingForm">
+              <div class="date-inputs">
+                <div class="date-input">
+                  <label>CHECK-IN</label>
+                  <input type="date" id="checkInDate" name="checkInDate" required>
+                </div>
+                <div class="date-input">
+                  <label>CHECKOUT</label>
+                  <input type="date" id="checkOutDate" name="checkOutDate" required>
+                </div>
+              </div>
+              <div class="guests-input">
+                <label>GUESTS</label>
+                <select id="numberOfGuests" name="numberOfGuests" required>
+                  <option value="" disabled selected>Select guests</option>
+                  <option value="1">1 guest</option>
+                  <option value="2">2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5">5+ guests</option>
+                </select>
+              </div>
+              <button type="button" class="reserve-btn" id="bookNowBtn" disabled>Reserve</button>
+            </form>
+            <p class="booking-note">You'll be redirected to PayPal for payment</p>
+          <% } else { %>
+            <p class="login-prompt">
+              <a href="/login">Log in</a> to make a reservation
+            </p>
+          <% } %>
         </div>
 
         <div class="price-breakdown">
           <div class="price-row">
-            <span>₹<%= listing.price.toLocaleString("en-IN") %> x 5 nights</span>
-            <span>₹<%= (listing.price * 5).toLocaleString("en-IN") %></span>
-          </div>
-          <div class="price-row">
-            <span>Service fee</span>
-            <span>₹<%= Math.round(listing.price * 0.14).toLocaleString("en-IN") %></span>
+            <span id="priceDisplay">$0.00 x 0 nights</span>
+            <span id="subtotal">$0.00</span>
           </div>
           <hr>
           <div class="price-row total">
-            <span>Total</span>
-            <span>₹<%= Math.round(listing.price * 5 + listing.price * 0.14).toLocaleString("en-IN") %></span>
+            <span>Total (USD)</span>
+            <span id="totalPrice">$0.00</span>
           </div>
         </div>
 

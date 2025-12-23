@@ -16,6 +16,7 @@ const flash = require("connect-flash");
 const listingRouter = require("./routes/listing");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
+const bookingRouter = require("./routes/booking");
 const apiRouter = require('./routes/api');
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -40,6 +41,7 @@ async function main() {
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Add JSON middleware for PayPal requests
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
@@ -117,7 +119,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currentUser = req.user; // Make currentUser available in all templates
+  res.locals.currentUser = req.user || null; // Make currentUser available in all templates (default to null)
 
   next();
 });
@@ -134,6 +136,7 @@ app.use((req, res, next) => {
 // Use listing routes
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+app.use("/bookings", bookingRouter);
 app.use("/", userRouter);
 app.use('/api', apiRouter);
 // --- Review Routes directly in app.js --- //

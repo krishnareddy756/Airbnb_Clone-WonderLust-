@@ -485,16 +485,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle Reserve button clicks
-    const reserveButtons = document.querySelectorAll('.reserve-btn');
-    reserveButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const listingId = this.getAttribute('data-listing-id');
-            addToWishlist(listingId, this);
-        });
-    });
-
     // Handle remove from wishlist buttons on wishlist page
     const removeWishlistButtons = document.querySelectorAll('.remove-wishlist');
     removeWishlistButtons.forEach(btn => {
@@ -661,4 +651,137 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         }, 3000);
     }
+});
+
+// ========== BOOKING & PAYPAL INTEGRATION ==========
+document.addEventListener('DOMContentLoaded', function() {
+    const checkInInput = document.getElementById('checkInDate');
+    const checkOutInput = document.getElementById('checkOutDate');
+    const guestsSelect = document.getElementById('numberOfGuests');
+    const bookNowBtn = document.getElementById('bookNowBtn');
+    const bookingForm = document.getElementById('bookingForm');
+
+    // Not on booking page
+    if (!checkInInput || !window.listing) {
+        return;
+    }
+
+    const listingData = window.listing;
+    
+    console.log('Booking form initialized with listing:', listingData); // Debug
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.setAttribute('min', today);
+    checkOutInput.setAttribute('min', today);
+
+    // Update price and enable button when dates change
+    const updatePriceAndButtonState = () => {
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+        const guests = guestsSelect.value;
+
+        console.log('Updating price:', { checkIn, checkOut, guests, price: listingData.price }); // Debug
+
+        // Clear display if incomplete
+        if (!checkIn || !checkOut || !guests) {
+            document.getElementById('subtotal').textContent = '$0.00';
+            document.getElementById('totalPrice').textContent = '$0.00';
+            document.getElementById('priceDisplay').textContent = `$0.00 x 0 nights`;
+            bookNowBtn.disabled = true;
+            return;
+        }
+
+        // Validate dates
+        if (new Date(checkOut) <= new Date(checkIn)) {
+            document.getElementById('subtotal').textContent = '$0.00';
+            document.getElementById('totalPrice').textContent = '$0.00';
+            document.getElementById('priceDisplay').textContent = `$0.00 x 0 nights`;
+            bookNowBtn.disabled = true;
+            return;
+        }
+
+        // Calculate nights
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
+        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+        // Price is already in USD
+        const priceUSD = (listingData.price || 50).toFixed(2);
+        const subtotalUSD = (parseFloat(priceUSD) * nights).toFixed(2);
+
+        // Update display
+        document.getElementById('priceDisplay').textContent = `$${priceUSD} x ${nights} nights`;
+        document.getElementById('subtotal').textContent = `$${subtotalUSD}`;
+        document.getElementById('totalPrice').textContent = `$${subtotalUSD}`;
+
+        // Enable button
+        bookNowBtn.disabled = false;
+    };
+
+    // Event listeners
+    checkInInput.addEventListener('change', updatePriceAndButtonState);
+    checkOutInput.addEventListener('change', updatePriceAndButtonState);
+    guestsSelect.addEventListener('change', updatePriceAndButtonState);
+
+    // Handle booking button click
+    bookNowBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+        const guests = guestsSelect.value;
+
+        if (!checkIn || !checkOut || !guests) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        if (new Date(checkOut) <= new Date(checkIn)) {
+            alert('Check-out date must be after check-in date');
+            return;
+        }
+
+        try {
+            bookNowBtn.disabled = true;
+            bookNowBtn.textContent = 'Processing...';
+
+            // Send booking request to backend
+            const response = await fetch('/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    listingId: listingData._id,
+                    checkInDate: checkIn,
+                    checkOutDate: checkOut,
+                    numberOfGuests: guests,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.message || 'Booking failed. Please try again.');
+                bookNowBtn.disabled = false;
+                bookNowBtn.textContent = 'Reserve';
+                return;
+            }
+
+            // Redirect to PayPal
+            if (data.approvalUrl) {
+                window.location.href = data.approvalUrl;
+            } else {
+                alert('Error: Could not get PayPal approval URL');
+                bookNowBtn.disabled = false;
+                bookNowBtn.textContent = 'Reserve';
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            alert('Error processing booking: ' + error.message);
+            bookNowBtn.disabled = false;
+            bookNowBtn.textContent = 'Reserve';
+        }
+    });
 });
