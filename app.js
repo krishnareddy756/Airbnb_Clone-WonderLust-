@@ -89,11 +89,9 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
     passReqToCallback: true
-  }, async function(accessToken, refreshToken, profile, cb) {
+  }, async function(req, accessToken, refreshToken, profile, cb) {
     // Find or create user based on profile emails
     try {
-      // first argument will be req because passReqToCallback is true
-      const req = arguments[0];
       const email = profile.emails && profile.emails[0] && profile.emails[0].value;
       if (!email) return cb(null, false, { message: 'No email found in Google profile' });
       let user = await User.findOne({ email });
